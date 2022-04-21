@@ -1,6 +1,7 @@
 package pizzabar;
 
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class Test {
   UserInterface ui = new UserInterface();
@@ -10,25 +11,56 @@ public class Test {
     order_test();
     extraTesting();
   }
-  
+  private enum ORDERSTATUSES {
+    PENDING,
+    READY,
+    DELIVERED,
+    PAID,
+    CANCELED
+  }
+  public void editOrderStatus(Order order) {
+    Scanner in = new Scanner(System.in);
+    ui.editOrderSelectStatusMessage(order);
+    switch (in.nextInt()) {
+      case 1 -> order.setStatus(String.valueOf(ORDERSTATUSES.PENDING));
+      case 2 -> order.setStatus(String.valueOf(ORDERSTATUSES.READY));
+      case 3 -> order.setStatus(String.valueOf(ORDERSTATUSES.DELIVERED));
+      case 4 -> order.setStatus(String.valueOf(ORDERSTATUSES.PAID));
+      case 5 -> order.setStatus(String.valueOf(ORDERSTATUSES.CANCELED));
+    }
+  }
   public void extraTesting() {
     Order order1 = new Order();
     Order order2 = new Order();
+    Order order3 = new Order();
     order2.setPickupTime(LocalDateTime.now().plusMinutes(15));
-    
+    order3.setPickupTime(LocalDateTime.now().plusMinutes(5));
+
+
     order1.addPizza(new Pizza("pizza O1", "order1", 420), 2);
     order1.addPizza(new Pizza("pizza2 O1", "order1", 42));
     order2.addPizza(new Pizza("pizza O2", "order2", 420));
     order2.addPizza(new Pizza("pizza2 O2", "order2", 42));
-    
+    order3.addPizza(new Pizza("pizza O3", "order3", 420));
+    order3.addPizza(new Pizza("pizza2 O3", "order3", 42));
+
     ui.printOrder(order1);
     ui.printOrder(order2);
-    
+
     // oderList
     OrderList orderList = new OrderList();
     orderList.addOrder(order1);
     orderList.addOrder(order2);
-    
+    orderList.addOrder(order3);
+
+    ui.printOrderList(orderList);
+
+    // editOrder test
+    Scanner in = new Scanner(System.in);
+    ui.editOrderSelectOrderMessage();
+    int chosenOrder = in.nextInt();
+    editOrderStatus(orderList.orders.get(chosenOrder-1));
+
     ui.printOrderList(orderList);
   }
   

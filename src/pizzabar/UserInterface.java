@@ -78,22 +78,26 @@ public class UserInterface {
     
     // orders
     for (int i = 0; i < orders.size(); i++) {
+      //print only if order status is neither paid nor canceled
       order = orders.get(i);
-      returnStr.append("-".repeat(56) + "\n");
-      
-      // individual order
-      // order entries
-      for (int j = 0; j < order.getPizzaTypes().size(); j++) {
-        Pizza pizza = order.getPizzaTypes().get(j);
-        int price = pizza.getPrice() * order.getAmountOfPizzaTypes().get(j);
-        
-        returnStr.append(String.format("- %2d X '%-40s' %4dkr\n",
-            order.getAmountOfPizzaTypes().get(j),
-            pizza.getNameAndTopping(),
-            price));
+      if (order.getStatus().equals("PAID") || order.getStatus().equals("CANCELED")) {
+      } else {
+        returnStr.append("-".repeat(56) + "\n");
+
+        // individual order
+        // order entries
+        for (int j = 0; j < order.getPizzaTypes().size(); j++) {
+          Pizza pizza = order.getPizzaTypes().get(j);
+          int price = pizza.getPrice() * order.getAmountOfPizzaTypes().get(j);
+
+          returnStr.append(String.format("- %2d X '%-40s' %4dkr\n",
+              order.getAmountOfPizzaTypes().get(j),
+              pizza.getNameAndTopping(),
+              price));
+        }
+
+        returnStr.append(String.format("ORDER[%2d] PICKUP-TIME %s      TOTAL: %5dkr \nSTATUS: %s\n", order.getId(), timeFormat(order.getPickupTime()), order.getTotalPrice(), order.getStatus()));
       }
-      
-      returnStr.append(String.format("ORDER[%2d] PICKUP-TIME %s      TOTAL: %5dkr \n", order.getId(), timeFormat(order.getPickupTime()), order.getTotalPrice()));
     }
     
     System.out.println(returnStr);
@@ -106,5 +110,20 @@ public class UserInterface {
         localDateTime.getDayOfMonth(),
         localDateTime.getMonth());
   }
-  
+  public void editOrderSelectOrderMessage() {
+    System.out.println("Which order do you want to change the status of?");
+  }
+  public void editOrderSelectStatusMessage (Order order) {
+    System.out.printf("""
+        You are changing the status of Order #%s.
+        Type a number corresponding to the action you want to take.
+        1 Pending
+        2 Ready
+        3 Delivered
+        4 Paid
+        5 Canceled
+        6 Change nothing and return to menu.
+        """
+        , order.getId());
+  }
 }
