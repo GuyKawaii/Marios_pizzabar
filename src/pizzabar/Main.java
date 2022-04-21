@@ -9,10 +9,10 @@ public class Main {
   Scanner in = new Scanner(System.in);
 
   public static void main(String[] args) {
-    new Main().mainMenu();
+    new Main().run();
   }
 
-  void mainMenu () {
+  public void mainMenu () {
     ui.printMainMenu();
     String userInput = in.nextLine();
     ui.printMainMenuCommand(userInput);
@@ -51,10 +51,13 @@ public class Main {
 
   public void run() {
     // Get marios menu
+    // orderList
     Menu menu = createMenu();
-
-
     ui.printMenu(menu);
+    mainMenu();
+
+
+
   }
 
   public Menu createMenu() {

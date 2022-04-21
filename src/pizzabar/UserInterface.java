@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 public class UserInterface {
   public void printMainMenu () {
-    System.out.println("Select an action: \n1. Make Order\n2. Edit Order\n3. Exit");
+    System.out.println("---------------------------------------------------------------------------------------------");
+    System.out.print("\n1. Make Order\n2. Edit Order\n3. Exit\nSelect an action:");
   }
 
   public void printMainMenuCommand (String string) {
