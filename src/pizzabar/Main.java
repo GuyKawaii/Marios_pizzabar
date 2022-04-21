@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Main {
   UserInterface ui = new UserInterface();
   Scanner in = new Scanner(System.in);
+  OrderList orderList = new OrderList();
 
   public static void main(String[] args) {
     new Main().run();
@@ -19,8 +20,10 @@ public class Main {
 
     switch (userInput.toLowerCase(Locale.ROOT)) {
       case "1", "make order", "make" -> orderPizzas();
-      case "2", "edit order", "edit" -> System.out.println("editOrder()");
-      case "3", "exit" -> System.out.println("exit");
+      case "2", "edit order", "edit" -> chooseOrder();
+      case "3" -> displayOrderList(false);
+      case "4" -> displayOrderList(true);
+      case "5", "exit" -> System.out.println("exit");
       default -> mainMenu();
     }
   }
@@ -39,14 +42,54 @@ public class Main {
     ui.printOrder(order2);
 
     // oderList
-    OrderList orderList = new OrderList();
+    //OrderList orderList = new OrderList();
     orderList.addOrder(order1);
     orderList.addOrder(order2);
 
-    ui.printOrderList(orderList);
+    ui.printOrderList(orderList, false);
     Test test = new Test();
-//    test.runAll();
-    new Main().run();
+    //test.runAll();
+    //new Main().run(); crashes when testing
+    mainMenu();
+  }
+
+  public void displayOrderList(boolean printFullList) {
+    ui.printOrderList(orderList, printFullList);
+    ui.printOrderListContinue();
+    in.nextLine();
+    run();
+  }
+
+  public void chooseOrder() {
+    ui.printOrderList(orderList, false);
+    ui.printSelectOrder();
+    int chosenOrder = in.nextInt();
+    while (chosenOrder <= 0 || chosenOrder > orderList.orders.size()) {
+      ui.printOrderOutOfRange();
+      ui.printSelectOrder();
+      chosenOrder = in.nextInt();
+    }
+    for (int i = 0; i < orderList.orders.size(); i++) {
+      if (orderList.orders.get(i).getId() == chosenOrder) {
+        Order order = orderList.orders.get(i);
+        editOrderStatus(order);
+      }
+    }
+  }
+
+  public void editOrderStatus(Order order) {
+    while (true) {
+      ui.printSelectStatus(order);
+      switch (in.nextInt()) {
+        case 1 -> order.setStatus(String.valueOf(OrderStatuses.PENDING));
+        case 2 -> order.setStatus(String.valueOf(OrderStatuses.READY));
+        case 3 -> order.setStatus(String.valueOf(OrderStatuses.DELIVERED));
+        case 4 -> order.setPaid(true);
+        case 5 -> order.setPaid(false);
+        case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
+        case 7 -> run();
+      }
+    }
   }
 
   public void run() {

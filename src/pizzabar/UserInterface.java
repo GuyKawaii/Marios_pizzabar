@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class UserInterface {
+  private final String TEXT_RESET = "\u001B[0m";
+  private final String TEXT_RED = "\u001B[31m";
+  private final String TEXT_GREEN = "\u001B[32m";
+
   public void printMainMenu () {
     System.out.println("---------------------------------------------------------------------------------------------");
-    System.out.print("\n1. Make Order\n2. Edit Order\n3. Exit\nSelect an action:");
+    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show Order list\n4. Show Full Order List\n5. Exit\nSelect an action: ");
   }
 
   public void printMainMenuCommand (String string) {
@@ -65,13 +69,13 @@ public class UserInterface {
     returnStr.append(String.format("TOTAL: %54dkr", order.getTotalPrice()));
     // Pickup-time
     if (order.getPickupTime() != null)
-      returnStr.append(String.format("\nPICKUP-TIME: %s\n", timeFormat(order.getPickupTime())));
+      returnStr.append(String.format("\nPICKUP-TIME: %s", timeFormat(order.getPickupTime()))); //fjernet \n efter %s
     
     System.out.println(returnStr);
   }
   
   
-  public void printOrderList(OrderList orderList) {
+  public void printOrderList(OrderList orderList, boolean printFullList) {
     StringBuilder returnStr = new StringBuilder();
     ArrayList<Order> orders = orderList.getOrders();
     Order order;
@@ -80,8 +84,9 @@ public class UserInterface {
     for (int i = 0; i < orders.size(); i++) {
       //print only if order status is neither paid nor canceled
       order = orders.get(i);
-      if (order.getStatus().equals("PAID") || order.getStatus().equals("CANCELED")) {
-      } else {
+      if (!printFullList && order.getStatus().equals(String.valueOf(OrderStatuses.CANCELED)) || !printFullList && order.isPaid() && order.getStatus().equals(String.valueOf(OrderStatuses.DELIVERED))) {
+      }
+      else {
         returnStr.append("-".repeat(56) + "\n");
 
         // individual order
@@ -96,7 +101,12 @@ public class UserInterface {
               price));
         }
 
-        returnStr.append(String.format("ORDER[%2d] PICKUP-TIME %s      TOTAL: %5dkr \nSTATUS: %s\n", order.getId(), timeFormat(order.getPickupTime()), order.getTotalPrice(), order.getStatus()));
+        returnStr.append(String.format("ORDER[%2d] PICKUP-TIME %s      TOTAL: %5dkr \nSTATUS: %s\n",
+            order.getId(), timeFormat(order.getPickupTime()), order.getTotalPrice(), order.getStatus()));
+        if (order.isPaid())
+          returnStr.append(String.format(TEXT_GREEN + "Payment has been made.\n" + TEXT_RESET));
+        else
+          returnStr.append(String.format(TEXT_RED + "Payment has not been made.\n" + TEXT_RESET));
       }
     }
     
@@ -110,20 +120,41 @@ public class UserInterface {
         localDateTime.getDayOfMonth(),
         localDateTime.getMonth());
   }
-  public void editOrderSelectOrderMessage() {
-    System.out.println("Which order do you want to change the status of?");
+  public void printOrderListContinue() {
+    System.out.println("Press enter to return to the main menu.");
   }
-  public void editOrderSelectStatusMessage (Order order) {
+  public void printSelectOrder() {
+    System.out.println("Type the ID of the order do you want to change the status of.");
+  }
+  public void printOrderOutOfRange() {
+    System.out.println("You selected a number outside the range of order ID's.");
+  }
+  public void printSelectStatus(Order order) {
+    printOrder(order);
+    System.out.printf("STATUS: %s\n", order.getStatus());
+    if (order.isPaid())
+      System.out.printf((TEXT_GREEN + "Payment has been made.\n" + TEXT_RESET));
+    else
+      System.out.printf((TEXT_RED + "Payment has not been made.\n" + TEXT_RESET));
     System.out.printf("""
+        
         You are changing the status of Order #%s.
         Type a number corresponding to the action you want to take.
         1 Pending
         2 Ready
         3 Delivered
         4 Paid
-        5 Canceled
-        6 Change nothing and return to menu.
+        5 Not paid
+        6 Canceled
+        7 Return to menu.
         """
         , order.getId());
+  }
+  public void printOrderStatusContinue() {
+    System.out.println("""
+        Do you want to change another order?
+        1 Yes
+        2 No
+        """);
   }
 }

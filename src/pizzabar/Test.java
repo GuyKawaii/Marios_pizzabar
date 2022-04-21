@@ -11,22 +11,17 @@ public class Test {
     order_test();
     extraTesting();
   }
-  private enum ORDERSTATUSES {
-    PENDING,
-    READY,
-    DELIVERED,
-    PAID,
-    CANCELED
-  }
+
   public void editOrderStatus(Order order) {
     Scanner in = new Scanner(System.in);
-    ui.editOrderSelectStatusMessage(order);
+    ui.printSelectStatus(order);
     switch (in.nextInt()) {
-      case 1 -> order.setStatus(String.valueOf(ORDERSTATUSES.PENDING));
-      case 2 -> order.setStatus(String.valueOf(ORDERSTATUSES.READY));
-      case 3 -> order.setStatus(String.valueOf(ORDERSTATUSES.DELIVERED));
-      case 4 -> order.setStatus(String.valueOf(ORDERSTATUSES.PAID));
-      case 5 -> order.setStatus(String.valueOf(ORDERSTATUSES.CANCELED));
+      case 1 -> order.setStatus(String.valueOf(OrderStatuses.PENDING));
+      case 2 -> order.setStatus(String.valueOf(OrderStatuses.READY));
+      case 3 -> order.setStatus(String.valueOf(OrderStatuses.DELIVERED));
+      case 4 -> order.setPaid(true);
+      case 5 -> order.setPaid(false);
+      case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
     }
   }
   public void extraTesting() {
@@ -53,15 +48,15 @@ public class Test {
     orderList.addOrder(order2);
     orderList.addOrder(order3);
 
-    ui.printOrderList(orderList);
+    ui.printOrderList(orderList, false);
 
     // editOrder test
     Scanner in = new Scanner(System.in);
-    ui.editOrderSelectOrderMessage();
+    ui.printSelectOrder();
     int chosenOrder = in.nextInt();
     editOrderStatus(orderList.orders.get(chosenOrder-1));
 
-    ui.printOrderList(orderList);
+    ui.printOrderList(orderList, false);
   }
   
   // 1 - print menu
