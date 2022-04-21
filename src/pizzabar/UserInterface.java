@@ -25,7 +25,7 @@ public class UserInterface {
     returnStr.append("PIZZAS\n");
     for (int i = 0; i < pizzas.size(); i++) {
       Pizza pizza = pizzas.get(i);
-      returnStr.append(String.format("%2d - %-20s' %-40s' %4sKr\n", (i + 1), pizza.getName(), pizza.getDescription(), pizza.getPrice()));
+      returnStr.append(String.format("%2d - %-15s' %-61s' %4sKr\n", (i + 1), pizza.getName(), pizza.getDescription(), pizza.getPrice()));
     }
     
     System.out.println(returnStr);
@@ -36,10 +36,10 @@ public class UserInterface {
     StringBuilder returnStr = new StringBuilder();
     
     // toppings
-    returnStr.append("TOPPINGS\n");
+    returnStr.append("TOPPINGS - (price for extra topping)\n");
     for (int i = 0; i < toppings.size(); i++) {
       Topping topping = toppings.get(i);
-      returnStr.append(String.format("%2d - %-62s' %4sKr\n", (i + 1), topping.getName(), topping.getPrice()));
+      returnStr.append(String.format("%2d - %-78s' %4sKr\n", (i + 1), topping.getName(), topping.getPrice()));
     }
     
     System.out.println(returnStr);
