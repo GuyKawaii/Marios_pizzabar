@@ -4,6 +4,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class UserInterface {
+  public void printMainMenu () {
+    System.out.println("---------------------------------------------------------------------------------------------");
+    System.out.print("\n1. Make Order\n2. Edit Order\n3. Exit\nSelect an action:");
+  }
+
+  public void printMainMenuCommand (String string) {
+    System.out.println("You have selected: "+string);
+  }
+
   public void printMenu(Menu menu) {
     printMenuPizzas(menu);
     printMenuToppings(menu);
