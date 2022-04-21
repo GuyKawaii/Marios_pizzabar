@@ -11,7 +11,7 @@ public class Order implements Comparable<Order> {
   private int id;
   private String status;
   private boolean paid;
-  
+
   public Order() {
     pizzaType = new ArrayList<>();
     amountOfPizzaType = new ArrayList<>();
@@ -28,7 +28,7 @@ public class Order implements Comparable<Order> {
   public String getStatus() {
     return status;
   }
-
+  
   public ArrayList<Pizza> getPizzaTypes() {
     return pizzaType;
   }

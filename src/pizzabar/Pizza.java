@@ -26,6 +26,7 @@ public class Pizza {
   }
   
   public int getPrice() {
+    // basePrice + toppings
     int price = basePrice;
     
     // Add toppings
