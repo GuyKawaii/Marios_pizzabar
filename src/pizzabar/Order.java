@@ -9,6 +9,10 @@ public class Order implements Comparable<Order> {
   private LocalDateTime pickupTime;
   private int totalPrice;
   private int id;
+  private boolean ready = false;
+  private boolean delivered = false;
+  private boolean paid = false;
+  private boolean canceled = false;
   
   public Order() {
     pizzaType = new ArrayList<>();
@@ -79,6 +83,38 @@ public class Order implements Comparable<Order> {
   
   public void setId(int id ) {
     this.id = id;
+  }
+
+  public boolean isReady() {
+    return ready;
+  }
+
+  public void setReady(boolean ready) {
+    this.ready = ready;
+  }
+
+  public boolean isDelivered() {
+    return delivered;
+  }
+
+  public void setDelivered(boolean delivered) {
+    this.delivered = delivered;
+  }
+
+  public boolean isPaid() {
+    return paid;
+  }
+
+  public void setPaid(boolean paid) {
+    this.paid = paid;
+  }
+
+  public boolean isCanceled() {
+    return canceled;
+  }
+
+  public void setCanceled(boolean canceled) {
+    this.canceled = canceled;
   }
   
   public void removePizzaID(int pizzaID) {
