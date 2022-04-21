@@ -9,6 +9,8 @@ public class Order implements Comparable<Order> {
   private LocalDateTime pickupTime;
   private int totalPrice;
   private int id;
+  private String status;
+  private boolean paid;
   
   public Order() {
     pizzaType = new ArrayList<>();
@@ -16,8 +18,17 @@ public class Order implements Comparable<Order> {
     pickupTime = LocalDateTime.now().plusMinutes(30); // default X min from now
     totalPrice = 0;
     id = 0;
+    setStatus("PENDING");
   }
-  
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
   public ArrayList<Pizza> getPizzaTypes() {
     return pizzaType;
   }
