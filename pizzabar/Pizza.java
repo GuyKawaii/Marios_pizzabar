@@ -45,7 +45,7 @@ public class Pizza {
     extraToppings.remove(topping);
   }
   
-  public ArrayList getToppings() {
+  public ArrayList<Topping> getToppings() {
     return extraToppings;
   }
   
@@ -58,22 +58,50 @@ public class Pizza {
     withdrawnToppings.remove(topping);
   }
   
-  public ArrayList getWithdrawnTopping() {
+  public ArrayList<Topping> getWithdrawnTopping() {
     return withdrawnToppings;
   }
   
   @Override
   public boolean equals(Object obj) {
-    // Pizzas are the same if extra/withdrawn toppings and name are equal
+    // Pizzas are equal if extra/withdrawn toppings and name are equal
     if (this == obj) return true;
-    if (!(obj instanceof Pizza)) return false;
-    return this.name.equals(((Pizza) obj).getName()) &&
-           this.getToppings().equals(((Pizza) obj).getToppings()) &&
-           this.getWithdrawnTopping().equals(((Pizza) obj).getWithdrawnTopping());
+    if (!(obj instanceof Pizza compare)) return false;
+    return
+        // base pizza name equal
+        this.name.equals(compare.getName()) &&
+        
+        // extraToppings are equal
+        this.extraToppings.size() == compare.extraToppings.size() &&
+        this.extraToppings.containsAll(compare.extraToppings) &&
+        compare.extraToppings.containsAll(this.extraToppings) &&
+        
+        // withdrawnToppings are equal
+        this.withdrawnToppings.size() == compare.withdrawnToppings.size() &&
+        this.withdrawnToppings.containsAll(compare.withdrawnToppings) &&
+        compare.withdrawnToppings.containsAll(this.withdrawnToppings);
+  }
+  
+  public String getNameAndTopping() {
+    StringBuilder returnStr = new StringBuilder();
+    
+    returnStr.append(name);
+    
+    // Toppings
+    for (Topping topping : extraToppings) {
+      returnStr.append(String.format(" +%s", topping.getName()));
+    }
+    // Toppings
+    for (Topping topping : withdrawnToppings) {
+      returnStr.append(String.format(" -%s", topping.getName()));
+    }
+    
+    return returnStr.toString();
   }
   
   @Override
   public String toString() {
+    // Name, description and toppings
     StringBuilder returnStr = new StringBuilder();
     
     returnStr.append(String.format("%s: %s", name, description));
@@ -91,4 +119,6 @@ public class Pizza {
     
     return returnStr.toString();
   }
+  
+  
 }
