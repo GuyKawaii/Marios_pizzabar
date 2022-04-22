@@ -171,4 +171,28 @@ public class UserInterface {
         2 No
         """);
   }
+
+  public void addPizzaToOrderMessage() {
+    System.out.println("Which pizza would you like to add to order? (name/number)");
+  }
+
+  public void addPizzaToOrderSuccessMessage(Pizza pizza) {
+    System.out.printf("\nYou have added %s to the order\n", pizza.getName());
+  }
+
+  public void addPizzaToOrderErrorMessage() {
+    System.out.println("There is no such pizza!, try again");
+  }
+
+  public void toppingMenuMessage() {
+    System.out.println("Would you like to add/remove a topping or continue with order? (add+name/remove+name/continue)");
+  }
+
+  public void addToppingErrorMessage() {
+    System.out.println("There is no such topping!, try again");
+  }
+
+  public void removeToppingErrorMessage() {
+    System.out.println("There is no such topping!, try again");
+  }
 }

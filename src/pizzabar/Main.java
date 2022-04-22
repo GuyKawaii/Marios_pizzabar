@@ -1,7 +1,6 @@
 package pizzabar;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -34,19 +33,19 @@ public class Main {
 
   void makeOrder() {
     Order order = new Order();
-    boolean loop = true;
-    while (loop) {
+    boolean loop;
+    do {
       addPizzaToOrder(order);
       loop = addAnotherPizzaToOrder();
-    }
+    } while (loop);
     order.setPickupTime(LocalDateTime.now().plusMinutes(15));
     orderList.addOrder(order);
   }
 
   public void addPizzaToOrder(Order order) {
     Pizza pizza;
-    boolean loopToppingsMenu = true;
-    System.out.println("Which pizza would you like to add to order? (Name)");
+    boolean loop;
+    ui.addPizzaToOrderMessage();
     String userInput = in.nextLine();
     if (tryParse(userInput) != null) {
       int userInputNum = parseInt(userInput);
@@ -55,35 +54,27 @@ public class Main {
       pizza = menu.getPizza(userInput);
     if (pizza != null) {
       order.addPizza(pizza);
-      System.out.printf("\nYou have added %s to the order\n", pizza.getName());
-      while (loopToppingsMenu) {
-        loopToppingsMenu = toppingsMenu(pizza);
-        ui.printMenu(menu);
+      ui.addPizzaToOrderSuccessMessage(pizza);
+      do {
+        loop = toppingsMenu(pizza);
+        //ui.printMenu(menu);
         ui.printOrderLite(order);
-      }
-    } else
+      } while (loop);
+    } else {
+      ui.addPizzaToOrderErrorMessage();
       addPizzaToOrder(order);
+    }
   }
 
   public boolean toppingsMenu(Pizza pizza) {
-    System.out.println("Would you like to add/remove a topping or continue with order? (add/remove/continue)");
+    ui.toppingMenuMessage();
     String userInput = in.nextLine();
     if (userInput.contains("add")) {
       userInput = userInput.substring(4);
-      if (tryParse(userInput) != null) {
-        int userInputNum = parseInt(userInput);
-        pizza.addTopping(menu.getTopping(userInputNum));
-      } else {
-        pizza.addTopping(menu.getTopping(userInput));
-      }
+      addTopping(userInput, pizza);
     } else if (userInput.contains("remove")) {
       userInput = userInput.substring(7);
-      if (tryParse(userInput) != null) {
-        int userInputNum = parseInt(userInput);
-        pizza.addWithdrawnTopping(menu.getTopping(userInputNum));
-      } else {
-        pizza.addWithdrawnTopping(menu.getTopping(userInput));
-      }
+      removeTopping(userInput, pizza);
     } else return !userInput.contains("continue");
     return true;
   }
@@ -92,7 +83,7 @@ public class Main {
     boolean noItem = false;
     for (Topping topping : menu.getToppings()
     ) {
-      if (tryParse(string) != null) {
+      if (tryParse(string) != null) { //TODO: ret FEJL!
         int stringNum = parseInt(string);
         pizza.addTopping(menu.getTopping(stringNum));
       } else if (string.equalsIgnoreCase(topping.getName())) {
@@ -101,10 +92,28 @@ public class Main {
         noItem = true;
       }
     }
-      if (noItem) {
-        System.out.println("There is no such topping!, try again");
+    if (noItem) {
+      ui.addToppingErrorMessage();
+    }
+  }
+
+  void removeTopping(String string, Pizza pizza) {
+    boolean noItem = false;
+    for (Topping topping : menu.getToppings()
+    ) {
+      if (tryParse(string) != null) { //TODO: ret FEJL!
+        int stringNum = parseInt(string);
+        pizza.addWithdrawnTopping(menu.getTopping(stringNum));
+      } else if (string.equalsIgnoreCase(topping.getName())) {
+        pizza.addWithdrawnTopping(menu.getTopping(string));
+      } else {
+        noItem = true;
       }
     }
+    if (noItem) {
+      ui.removeToppingErrorMessage();
+    }
+  }
 
   public Integer tryParse(String text) {
     try {
