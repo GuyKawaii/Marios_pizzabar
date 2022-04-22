@@ -9,12 +9,8 @@ public class UserInterface {
   private final String TEXT_GREEN = "\u001B[32m";
 
   public void printMainMenu () {
-    System.out.println("---------------------------------------------------------------------------------------------");
-    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show Order list\n4. Show Full Order List\n5. Exit\nSelect an action: ");
-  }
-
-  public void printMainMenuCommand (String string) {
-    System.out.println("You have selected: "+string);
+    System.out.println("--------------------------------------------------------------------------------------------");
+    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show Order list\n4. Show Full Order List\n5. Exit\nSelect an action: \n");
   }
 
   public void printMenu(Menu menu) {
@@ -71,6 +67,24 @@ public class UserInterface {
     if (order.getPickupTime() != null)
       returnStr.append(String.format("\nPICKUP-TIME: %s", timeFormat(order.getPickupTime()))); //fjernet \n efter %s
     
+    System.out.println(returnStr);
+  }
+
+  public void printOrderLite(Order order) {
+    StringBuilder returnStr = new StringBuilder();
+
+    // Order entries
+    for (int i = 0; i < order.getPizzaTypes().size(); i++) {
+      Pizza pizza = order.getPizzaTypes().get(i);
+      int price = pizza.getPrice() * order.getAmountOfPizzaTypes().get(i);
+
+      returnStr.append(String.format("ID[%2d] - %2d X '%-40s' %4dkr\n",
+          (i + 1),
+          order.getAmountOfPizzaTypes().get(i),
+          pizza.getNameAndTopping(),
+          price));
+    }
+    System.out.println("---------------------------------------------------------------------------------------------");
     System.out.println(returnStr);
   }
   
