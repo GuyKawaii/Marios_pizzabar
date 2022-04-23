@@ -1,6 +1,7 @@
 package pizzabar;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -32,64 +33,76 @@ public class Main {
   }
 
   void makeOrder() {
+    boolean loop = true;
     Order order = new Order();
-    boolean loop;
-    do {
-      addPizzaToOrder(order);
-      loop = addAnotherPizzaToOrder();
-    } while (loop);
+    addPizzaToOrder(order);
+    while (loop) {
+      ui.makeOrderMessage();
+      String userInput = in.next().toLowerCase(Locale.ROOT);
+      if (userInput.contains("add")) {
+        addPizzaToOrder(order);
+      } else if (userInput.contains("continue")) {
+        loop = false;
+      }
+    }
     order.setPickupTime(LocalDateTime.now().plusMinutes(15));
     orderList.addOrder(order);
   }
 
   public void addPizzaToOrder(Order order) {
     Pizza pizza;
-    boolean loop;
+    boolean loop = true;
+
     ui.addPizzaToOrderMessage();
-    String userInput = in.nextLine();
+    String userInput = in.nextLine().toLowerCase(Locale.ROOT);
     if (tryParse(userInput) != null) {
-      int userInputNum = parseInt(userInput);
-      pizza = menu.getPizza(userInputNum);
+      pizza = menu.getPizza(parseInt(userInput));
     } else
       pizza = menu.getPizza(userInput);
+
+    System.out.println("//TEST "+pizza); // Fejlsøgning
+    System.out.println("//TEST "+userInput); // Fejlsøgning
+
     if (pizza != null) {
       order.addPizza(pizza);
       ui.addPizzaToOrderSuccessMessage(pizza);
-      do {
-        loop = toppingsMenu(pizza);
-        //ui.printMenu(menu);
-        ui.printOrderLite(order);
-      } while (loop);
+      while (loop) {
+        loop = toppingsMenu(pizza, loop);
+      }
+      ui.printOrderLite(order);
     } else {
-      ui.addPizzaToOrderErrorMessage();
+      ui.addPizzaToOrderErrorMessage(); //TODO!: besked bliver altid vist ved add pizza, da pizza = null. Efter en mindre undersøgelse tyder det på at være en fejl der opstår ved recursion eller scanner bug.
       addPizzaToOrder(order);
     }
   }
 
-  public boolean toppingsMenu(Pizza pizza) {
+  public boolean toppingsMenu(Pizza pizza, boolean loop) {
+
     ui.toppingMenuMessage();
-    String userInput = in.nextLine();
-    if (userInput.contains("add")) {
+    String userInput = in.nextLine().toLowerCase(Locale.ROOT);
+    if (userInput.contains("add ")) {
       userInput = userInput.substring(4);
       addTopping(userInput, pizza);
-    } else if (userInput.contains("remove")) {
+    } else if (userInput.contains("remove ")) {
       userInput = userInput.substring(7);
       removeTopping(userInput, pizza);
-    } else return !userInput.contains("continue");
-    return true;
+    } else loop = !userInput.contains("continue");
+    orderCleanup(pizza);
+    return loop;
   }
 
-  void addTopping(String string, Pizza pizza) {
-    boolean noItem = false;
+  void addTopping(String text, Pizza pizza) {
+    boolean noItem = true;
+    int counter = 0;
     for (Topping topping : menu.getToppings()
     ) {
-      if (tryParse(string) != null) { //TODO: ret FEJL!
-        int stringNum = parseInt(string);
-        pizza.addTopping(menu.getTopping(stringNum));
-      } else if (string.equalsIgnoreCase(topping.getName())) {
-        pizza.addTopping(menu.getTopping(string));
-      } else {
-        noItem = true;
+      counter++;
+      if (tryParse(text) != null && tryParse(text) == counter) {
+        pizza.addTopping(menu.getTopping(parseInt(text)));
+        noItem = false;
+      } else if (text.equalsIgnoreCase(topping.getName())) {
+        pizza.addTopping(menu.getTopping(text));
+        noItem = false;
       }
     }
     if (noItem) {
@@ -97,17 +110,18 @@ public class Main {
     }
   }
 
-  void removeTopping(String string, Pizza pizza) {
-    boolean noItem = false;
+  void removeTopping(String text, Pizza pizza) {
+    boolean noItem = true;
+    int counter = 0;
     for (Topping topping : menu.getToppings()
     ) {
-      if (tryParse(string) != null) { //TODO: ret FEJL!
-        int stringNum = parseInt(string);
-        pizza.addWithdrawnTopping(menu.getTopping(stringNum));
-      } else if (string.equalsIgnoreCase(topping.getName())) {
-        pizza.addWithdrawnTopping(menu.getTopping(string));
-      } else {
-        noItem = true;
+      counter++;
+      if (tryParse(text) != null && tryParse(text) == counter) {
+        pizza.addWithdrawnTopping(menu.getTopping(parseInt(text)));
+        noItem = false;
+      } else if (text.equalsIgnoreCase(topping.getName())) {
+        pizza.addWithdrawnTopping(menu.getTopping(text));
+        noItem = false;
       }
     }
     if (noItem) {
@@ -115,6 +129,31 @@ public class Main {
     }
   }
 
+  public void orderCleanup(Pizza pizza) {
+    ArrayList<Topping> forRemoval = new ArrayList<>();
+    pizza.setExtraToppings(removeDuplicates(pizza.getToppings()));
+    pizza.setWithdrawnToppings(removeDuplicates(pizza.getWithdrawnTopping()));
+
+    if (pizza.getToppings().size() >= pizza.getWithdrawnTopping().size()) {
+      for (Topping topping : pizza.getToppings()
+      ) {
+        if (pizza.getWithdrawnTopping().contains(topping))
+          forRemoval.add(topping);
+      }
+      pizza.getToppings().removeAll(forRemoval);
+      pizza.getWithdrawnTopping().removeAll(forRemoval);
+    } else {
+      for (Topping topping : pizza.getWithdrawnTopping()
+      ) {
+        if (pizza.getToppings().contains(topping))
+          forRemoval.add(topping);
+      }
+      pizza.getWithdrawnTopping().removeAll(forRemoval);
+      pizza.getToppings().removeAll(forRemoval);
+    }
+  }
+
+  //Utilities
   public Integer tryParse(String text) {
     try {
       return parseInt(text);
@@ -123,13 +162,14 @@ public class Main {
     }
   }
 
-  public boolean addAnotherPizzaToOrder() {
-    System.out.println("Do you want to add another pizza, or continue with order? (add/continue)");
-    String userInput = in.next();
-    if (userInput.contains("add")) {
-      System.out.println();
-    } else return !userInput.contains("continue");
-    return true;
+  public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+    ArrayList<T> newList = new ArrayList<>();
+    for (T element : list) {
+      if (!newList.contains(element)) {
+        newList.add(element);
+      }
+    }
+    return newList;
   }
 
   public void displayOrderList(boolean printFullList) {
@@ -176,14 +216,12 @@ public class Main {
     // orderList
     boolean loop = true;
 
-    do {
+    while (loop) {
       ui.printOrderList(orderList, false);
       menu = createMenu();
       ui.printMenu(menu);
       loop = mainMenu(loop);
-    } while (loop);
-
-
+    }
   }
 
   public Menu createMenu() {

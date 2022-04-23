@@ -10,7 +10,7 @@ public class UserInterface {
 
   public void printMainMenu () {
     System.out.println("--------------------------------------------------------------------------------------------");
-    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show Order list\n4. Show Full Order List\n5. Exit\nSelect an action: \n");
+    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show Order list\n4. Show Full Order List\n5. Exit\nSelect an action:");
   }
 
   public void printMenu(Menu menu) {
@@ -66,7 +66,8 @@ public class UserInterface {
     // Pickup-time
     if (order.getPickupTime() != null)
       returnStr.append(String.format("\nPICKUP-TIME: %s", timeFormat(order.getPickupTime()))); //fjernet \n efter %s
-    
+
+    System.out.println();
     System.out.println(returnStr);
   }
 
@@ -84,7 +85,7 @@ public class UserInterface {
           pizza.getNameAndTopping(),
           price));
     }
-    System.out.println("---------------------------------------------------------------------------------------------");
+    System.out.println();
     System.out.println(returnStr);
   }
   
@@ -123,7 +124,7 @@ public class UserInterface {
           returnStr.append(String.format(TEXT_RED + "Payment has not been made.\n" + TEXT_RESET));
       }
     }
-    
+    System.out.println();
     System.out.println(returnStr);
   }
   
@@ -194,5 +195,9 @@ public class UserInterface {
 
   public void removeToppingErrorMessage() {
     System.out.println("There is no such topping!, try again");
+  }
+
+  public void makeOrderMessage() {
+    System.out.println("Do you want to add another pizza, or continue with order? (add/continue)");
   }
 }

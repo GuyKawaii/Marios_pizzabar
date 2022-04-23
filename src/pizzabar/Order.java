@@ -15,7 +15,7 @@ public class Order implements Comparable<Order> {
   public Order() {
     pizzaType = new ArrayList<>();
     amountOfPizzaType = new ArrayList<>();
-    pickupTime = LocalDateTime.now().plusMinutes(30); // default X min from now
+    //pickupTime = LocalDateTime.now().plusMinutes(30); // default X min from now
     totalPrice = 0;
     id = 0;
     setStatus(String.valueOf(OrderStatuses.PENDING));
