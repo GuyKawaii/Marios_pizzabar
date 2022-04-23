@@ -20,7 +20,7 @@ public class Main {
 
   public boolean mainMenu(boolean loop) {
     ui.printMainMenu();
-    String userInput = in.nextLine();
+    String userInput = in.nextLine().toLowerCase(Locale.ROOT);
 
     switch (userInput.toLowerCase(Locale.ROOT)) {
       case "1", "make order", "make" -> makeOrder();
@@ -38,7 +38,7 @@ public class Main {
     addPizzaToOrder(order);
     while (loop) {
       ui.makeOrderMessage();
-      String userInput = in.next().toLowerCase(Locale.ROOT);
+      String userInput = in.nextLine().toLowerCase(Locale.ROOT);
       if (userInput.contains("add")) {
         addPizzaToOrder(order);
       } else if (userInput.contains("continue")) {
@@ -55,13 +55,10 @@ public class Main {
 
     ui.addPizzaToOrderMessage();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
-    if (tryParse(userInput) != null) {
+    if (tryParse(userInput) != null && parseInt(userInput)<=menu.getPizzas().size()) {
       pizza = menu.getPizza(parseInt(userInput));
     } else
       pizza = menu.getPizza(userInput);
-
-    System.out.println("//TEST "+pizza); // Fejlsøgning
-    System.out.println("//TEST "+userInput); // Fejlsøgning
 
     if (pizza != null) {
       order.addPizza(pizza);
@@ -71,7 +68,7 @@ public class Main {
       }
       ui.printOrderLite(order);
     } else {
-      ui.addPizzaToOrderErrorMessage(); //TODO!: besked bliver altid vist ved add pizza, da pizza = null. Efter en mindre undersøgelse tyder det på at være en fejl der opstår ved recursion eller scanner bug.
+      ui.addPizzaToOrderErrorMessage();
       addPizzaToOrder(order);
     }
   }
@@ -86,7 +83,7 @@ public class Main {
     } else if (userInput.contains("remove ")) {
       userInput = userInput.substring(7);
       removeTopping(userInput, pizza);
-    } else loop = !userInput.contains("continue");
+    } else return !userInput.contains("continue");
     orderCleanup(pizza);
     return loop;
   }
