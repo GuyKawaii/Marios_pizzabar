@@ -49,6 +49,10 @@ public class Pizza {
   public ArrayList<Topping> getToppings() {
     return extraToppings;
   }
+
+  public void setExtraToppings(ArrayList<Topping> extraToppings) {
+    this.extraToppings = extraToppings;
+  }
   
   // withdrawnToppings
   public void addWithdrawnTopping(Topping topping) {
@@ -62,7 +66,11 @@ public class Pizza {
   public ArrayList<Topping> getWithdrawnTopping() {
     return withdrawnToppings;
   }
-  
+
+  public void setWithdrawnToppings(ArrayList<Topping> withdrawnToppings) {
+    this.withdrawnToppings = withdrawnToppings;
+  }
+
   @Override
   public boolean equals(Object obj) {
     // Pizzas are equal if extra/withdrawn toppings and name are equal
