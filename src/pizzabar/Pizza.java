@@ -39,7 +39,13 @@ public class Pizza {
   
   // extraToppings
   public void addTopping(Topping topping) {
-    extraToppings.add(topping);
+    // same withdrawnToppings and extraToppings cancel/removes each other
+    if (withdrawnToppings.contains(topping))
+      withdrawnToppings.remove(topping);
+    
+    // add if not already present
+    else if (!extraToppings.contains(topping))
+      extraToppings.add(topping);
   }
   
   public void removeTopping(Topping topping) {
@@ -56,7 +62,13 @@ public class Pizza {
   
   // withdrawnToppings
   public void addWithdrawnTopping(Topping topping) {
-    withdrawnToppings.add(topping);
+    // same withdrawnToppings and extraToppings cancel each other
+    if (extraToppings.contains(topping))
+      extraToppings.remove(topping);
+    
+    // add if not already present
+    else if (!withdrawnToppings.contains(topping))
+      withdrawnToppings.add(topping);
   }
   
   public void removeWithdrawnTopping(Topping topping) {

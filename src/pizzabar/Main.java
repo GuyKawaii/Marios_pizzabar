@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+
 import static java.lang.Integer.parseInt;
 
 public class Main {
@@ -11,12 +12,12 @@ public class Main {
   Scanner in = new Scanner(System.in);
   OrderList orderList = new OrderList();
   private Menu menu;
-
+  
   public static void main(String[] args) {
     new Main().run();
-    //new Test().runAll();
+//    new Test().runAll();
   }
-
+  
   public boolean mainMenu(boolean loop) {
     ui.printMainMenu();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
@@ -29,130 +30,134 @@ public class Main {
     }
     return loop;
   }
-
+  
   void makeOrder() {
     boolean loop = true;
     Order order = new Order();
     addPizzaToOrder(order);
     while (loop) {
       ui.makeOrderMessage();
-      String userInput = in.nextLine().toLowerCase(Locale.ROOT);
+      String userInput = in.nextLine().toLowerCase();
       if (userInput.contains("add")) {
         addPizzaToOrder(order);
       } else if (userInput.contains("continue")) {
         loop = false;
       }
     }
-    order.setPickupTime(LocalDateTime.now().plusMinutes(15));// TODO: add time.
+    
+    // pickupTime
+    LocalDateTime pickupTime = ui.pickupTimeMenu();
+    order.setPickupTime(pickupTime);
+    
+    // Add finished order
     orderList.addOrder(order);
   }
-
+  
   public void addPizzaToOrder(Order order) {
-    Pizza pizza;
-    boolean loop = true;
+    // adding: customized pizzaType and its quantity to order
+    Pizza pizza = null;
+    int quantity;
+    
     ui.addPizzaToOrderMessage();
-    String userInput = in.nextLine().toLowerCase(Locale.ROOT);
-    if (tryParse(userInput) != null && parseInt(userInput)<=menu.getPizzas().size()) {
-      pizza = menu.getPizza(parseInt(userInput));
-    } else
-      pizza = menu.getPizza(userInput);
-    if (pizza != null) {
-      order.addPizza(pizza);
-      ui.addPizzaToOrderSuccessMessage(pizza);
-      while (loop) {
-        loop = toppingsMenu(pizza, loop);
-      }
-      ui.printOrderLite(order);
-    } else {
-      ui.addPizzaToOrderErrorMessage();
-      addPizzaToOrder(order);
+    
+    // Selecting pizza
+    boolean noPizzaSelected = true;
+    while (noPizzaSelected) {
+      // UserInput
+      String userInput = in.nextLine().toLowerCase();
+      Integer pizzaID = tryParseInteger(userInput);
+      
+      // Select pizza by ID or name
+      if (pizzaID != null)
+        pizza = menu.getPizza(pizzaID);
+      else
+        pizza = menu.getPizza(userInput);
+      
+      // retry until pizza selected
+      if (pizza != null) noPizzaSelected = false;
+      else ui.addPizzaToOrderErrorMessage();
     }
+    
+    // Add toppings to current pizza
+    toppingsMenu(pizza);
+    
+    // Select quantity of given pizza
+    quantity = ui.pizzaQuantityMenu();
+    
+    // Add selected pizza to order
+    order.addPizza(pizza, quantity);
+    ui.addPizzaToOrderSuccessMessage(pizza);
+    
+    ui.printOrderLite(order);
   }
-
-  public boolean toppingsMenu(Pizza pizza, boolean loop) {
-    ui.toppingMenuMessage();
-    String userInput = in.nextLine().toLowerCase(Locale.ROOT);
-    if (userInput.contains("add ")) {
-      userInput = userInput.substring(4);
-      addTopping(userInput, pizza);
-    } else if (userInput.contains("remove ")) {
-      userInput = userInput.substring(7);
-      removeTopping(userInput, pizza);
-    } else return !userInput.contains("continue");
-    orderCleanup(pizza);
-    return loop;
-  }
-
-  void addTopping(String text, Pizza pizza) { // TODO: Check for topping name.
-    boolean noItem = true;
-    int counter = 0;
-    for (Topping topping : menu.getToppings()
-    ) {
-      counter++;
-      if (tryParse(text) != null && tryParse(text) == counter) {
-        pizza.addTopping(menu.getTopping(parseInt(text)));
-        noItem = false;
-      } else if (text.equalsIgnoreCase(topping.getName())) {
-        pizza.addTopping(menu.getTopping(text));
-        noItem = false;
+  
+  public void toppingsMenu(Pizza pizza) {
+    // modifies pizza by adding toppings
+    boolean addingToppings = true;
+    
+    // Until chosen
+    while (addingToppings) {
+      ui.toppingMenuMessage();
+      
+      // get action and topping
+      String[] userInput = in.nextLine().toLowerCase().split(" ", 2);
+      String action = userInput[0];
+      String topping = (userInput.length == 2) ? userInput[1]: null;
+      
+      // preform action
+      switch (action) {
+        case "add", "a" -> addTopping(topping, pizza);
+        case "remove", "r" -> removeTopping(topping, pizza);
+        case "" -> addingToppings = false; // continue/done
       }
     }
-    if (noItem) {
+    
+  }
+  
+  void addTopping(String toppingName, Pizza pizza) {
+    Integer toppingID = tryParseInteger(toppingName);
+    Topping topping;
+    
+    // Get topping from menu
+    if (toppingID != null)
+      topping = menu.getTopping(toppingID);
+    else
+      topping = menu.getTopping(toppingName);
+    
+    // Add topping to pizza
+    if (topping != null)
+      pizza.addTopping(topping);
+    else
       ui.addToppingErrorMessage();
-    }
   }
-
-  void removeTopping(String text, Pizza pizza) {
-    boolean noItem = true;
-    int counter = 0;
-    for (Topping topping : menu.getToppings()
-    ) {
-      counter++;
-      if (tryParse(text) != null && tryParse(text) == counter) {
-        pizza.addWithdrawnTopping(menu.getTopping(parseInt(text)));
-        noItem = false;
-      } else if (text.equalsIgnoreCase(topping.getName())) {
-        pizza.addWithdrawnTopping(menu.getTopping(text));
-        noItem = false;
-      }
-    }
-    if (noItem) {
+  
+  void removeTopping(String toppingName, Pizza pizza) {
+    Integer toppingID = tryParseInteger(toppingName);
+    Topping topping;
+    
+    // Get topping from menu
+    if (toppingID != null)
+      topping = menu.getTopping(toppingID);
+    else
+      topping = menu.getTopping(toppingName);
+    
+    // Add topping to pizza
+    if (topping != null)
+      pizza.addWithdrawnTopping(topping);
+    else
       ui.removeToppingErrorMessage();
-    }
   }
-
-  public void orderCleanup(Pizza pizza) { //TODO : include in Pizza. Check for topping name.
-    ArrayList<Topping> forRemoval = new ArrayList<>();
-    pizza.setExtraToppings(removeDuplicates(pizza.getToppings()));
-    pizza.setWithdrawnToppings(removeDuplicates(pizza.getWithdrawnTopping()));
-    if (pizza.getToppings().size() >= pizza.getWithdrawnTopping().size()) {
-      for (Topping topping : pizza.getToppings()
-      ) {
-        if (pizza.getWithdrawnTopping().contains(topping))
-          forRemoval.add(topping);
-      }
-      pizza.getToppings().removeAll(forRemoval);
-      pizza.getWithdrawnTopping().removeAll(forRemoval);
-    } else {
-      for (Topping topping : pizza.getWithdrawnTopping()
-      ) {
-        if (pizza.getToppings().contains(topping))
-          forRemoval.add(topping);
-      }
-      pizza.getWithdrawnTopping().removeAll(forRemoval);
-      pizza.getToppings().removeAll(forRemoval);
-    }
-  }
-
+  
+  
   //Utilities
-  public Integer tryParse(String text) {
+  public Integer tryParseInteger(String text) {
     try {
       return parseInt(text);
     } catch (NumberFormatException e) {
       return null;
     }
   }
-
+  
   public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
     ArrayList<T> newList = new ArrayList<>();
     for (T element : list) {
@@ -162,13 +167,13 @@ public class Main {
     }
     return newList;
   }
-
+  
   public void displayOrderList(boolean printFullList) {
     ui.printOrderList(orderList, printFullList);
     ui.printOrderListContinue();
     in.nextLine();
   }
-
+  
   public void chooseOrder() {
     ui.printOrderList(orderList, false);
     ui.printSelectOrder();
@@ -185,7 +190,7 @@ public class Main {
       }
     }
   }
-
+  
   public void editOrderStatus(Order order) {
     boolean loop = true;
     while (loop) {
@@ -201,12 +206,12 @@ public class Main {
       }
     }
   }
-
+  
   public void run() {
     // Get marios menu
     // orderList
     boolean loop = true;
-
+    
     while (loop) {
       ui.printOrderList(orderList, false);
       menu = createMenu();
@@ -214,7 +219,7 @@ public class Main {
       loop = mainMenu(loop);
     }
   }
-
+  
   public Menu createMenu() {
     // Create menu for Marions pizzabar
     Menu menuMario = new Menu();
@@ -253,4 +258,64 @@ public class Main {
     return menuMario;
   }
 
+//  void addTopping(String topping, Pizza pizza) {
+//    boolean noItem = true;
+//    int counter = 0;
+//    for (Topping topping : menu.getToppings()
+//    ) {
+//      counter++;
+//      if (tryParse(toppingSelect) != null && tryParse(toppingSelect) == counter) {
+//        pizza.addTopping(menu.getTopping(parseInt(toppingSelect)));
+//        noItem = false;
+//      } else if (toppingSelect.equalsIgnoreCase(topping.getName())) {
+//        pizza.addTopping(menu.getTopping(toppingSelect));
+//        noItem = false;
+//      }
+//    }
+//    if (noItem) {
+//      ui.addToppingErrorMessage();
+//    }
+//  }
+
+//  void removeTopping(String text, Pizza pizza) {
+//    boolean noItem = true;
+//    int counter = 0;
+//    for (Topping topping : menu.getToppings()
+//    ) {
+//      counter++;
+//      if (tryParse(text) != null && tryParse(text) == counter) {
+//        pizza.addWithdrawnTopping(menu.getTopping(parseInt(text)));
+//        noItem = false;
+//      } else if (text.equalsIgnoreCase(topping.getName())) {
+//        pizza.addWithdrawnTopping(menu.getTopping(text));
+//        noItem = false;
+//      }
+//    }
+//    if (noItem) {
+//      ui.removeToppingErrorMessage();
+//    }
+//  }
+
+//  public void orderCleanup(Pizza pizza) {
+//    ArrayList<Topping> forRemoval = new ArrayList<>();
+//    pizza.setExtraToppings(removeDuplicates(pizza.getToppings()));
+//    pizza.setWithdrawnToppings(removeDuplicates(pizza.getWithdrawnTopping()));
+//    if (pizza.getToppings().size() >= pizza.getWithdrawnTopping().size()) {
+//      for (Topping topping : pizza.getToppings()
+//      ) {
+//        if (pizza.getWithdrawnTopping().contains(topping))
+//          forRemoval.add(topping);
+//      }
+//      pizza.getToppings().removeAll(forRemoval);
+//      pizza.getWithdrawnTopping().removeAll(forRemoval);
+//    } else {
+//      for (Topping topping : pizza.getWithdrawnTopping()
+//      ) {
+//        if (pizza.getToppings().contains(topping))
+//          forRemoval.add(topping);
+//      }
+//      pizza.getWithdrawnTopping().removeAll(forRemoval);
+//      pizza.getToppings().removeAll(forRemoval);
+//    }
+//  }
 }
