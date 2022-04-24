@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
-
 import static java.lang.Integer.parseInt;
 
 public class Main {
@@ -21,11 +20,10 @@ public class Main {
   public boolean mainMenu(boolean loop) {
     ui.printMainMenu();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
-
     switch (userInput.toLowerCase(Locale.ROOT)) {
       case "1", "make order", "make" -> makeOrder();
       case "2", "edit order", "edit" -> chooseOrder();
-      case "3" -> displayOrderList(false);
+      case "3" -> displayOrderList(false); //TODO: merge list. add text input.
       case "4" -> displayOrderList(true);
       case "5", "exit" -> loop = false;
     }
@@ -45,21 +43,19 @@ public class Main {
         loop = false;
       }
     }
-    order.setPickupTime(LocalDateTime.now().plusMinutes(15));
+    order.setPickupTime(LocalDateTime.now().plusMinutes(15));// TODO: add time.
     orderList.addOrder(order);
   }
 
   public void addPizzaToOrder(Order order) {
     Pizza pizza;
     boolean loop = true;
-
     ui.addPizzaToOrderMessage();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
     if (tryParse(userInput) != null && parseInt(userInput)<=menu.getPizzas().size()) {
       pizza = menu.getPizza(parseInt(userInput));
     } else
       pizza = menu.getPizza(userInput);
-
     if (pizza != null) {
       order.addPizza(pizza);
       ui.addPizzaToOrderSuccessMessage(pizza);
@@ -74,7 +70,6 @@ public class Main {
   }
 
   public boolean toppingsMenu(Pizza pizza, boolean loop) {
-
     ui.toppingMenuMessage();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
     if (userInput.contains("add ")) {
@@ -88,7 +83,7 @@ public class Main {
     return loop;
   }
 
-  void addTopping(String text, Pizza pizza) {
+  void addTopping(String text, Pizza pizza) { // TODO: Check for topping name.
     boolean noItem = true;
     int counter = 0;
     for (Topping topping : menu.getToppings()
@@ -126,11 +121,10 @@ public class Main {
     }
   }
 
-  public void orderCleanup(Pizza pizza) {
+  public void orderCleanup(Pizza pizza) { //TODO : include in Pizza. Check for topping name.
     ArrayList<Topping> forRemoval = new ArrayList<>();
     pizza.setExtraToppings(removeDuplicates(pizza.getToppings()));
     pizza.setWithdrawnToppings(removeDuplicates(pizza.getWithdrawnTopping()));
-
     if (pizza.getToppings().size() >= pizza.getWithdrawnTopping().size()) {
       for (Topping topping : pizza.getToppings()
       ) {
