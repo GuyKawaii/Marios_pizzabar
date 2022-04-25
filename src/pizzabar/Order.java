@@ -101,14 +101,15 @@ public class Order implements Comparable<Order> {
     this.id = id;
   }
   
-  public void removePizzaID(int pizzaID) {
-    int index = pizzaID - 1;
-    
-    if (pizzaType.get(index) != null) {
-      pizzaType.remove(index);
-      amountOfPizzaType.remove(index);
+  public boolean removePizzaID(Integer pizzaID) {
+    if (pizzaID !=null && 0 <= pizzaID - 1 && pizzaID - 1 < pizzaType.size()) {
+      pizzaType.remove(pizzaID - 1);
+      amountOfPizzaType.remove(pizzaID - 1);
       updateTotalPrice();
-    }
+      return true;
+    
+    } else
+      return false;
   }
   
   public void setPickupTime(LocalDateTime localDateTime) {

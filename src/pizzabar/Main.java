@@ -1,7 +1,6 @@
 package pizzabar;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -12,12 +11,12 @@ public class Main {
   Scanner in = new Scanner(System.in);
   OrderList orderList = new OrderList();
   private Menu menu;
-
+  
   public static void main(String[] args) {
     new Main().run();
 //    new Test().runAll();
   }
-
+  
   public boolean mainMenu(boolean loop) {
     ui.printMainMenu();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
@@ -29,80 +28,85 @@ public class Main {
     }
     return loop;
   }
-
+  
   void makeOrder() {
     boolean loop = true;
     Order order = new Order();
     addPizzaToOrder(order);
     while (loop) {
+      
       ui.makeOrderMessage();
       String userInput = in.nextLine().toLowerCase();
-      if (userInput.contains("add")) {
-        addPizzaToOrder(order);
-      } else if (userInput.contains("continue")) {
-        loop = false;
+      
+      switch (userInput) {
+        case "add", "a" -> addPizzaToOrder(order);
+        case "remove", "r" -> ui.removePizzaFromOrder(order);
+        case "" -> loop = false;
       }
+      
     }
-
+    
     // pickupTime
     LocalDateTime pickupTime = ui.pickupTimeMenu();
     order.setPickupTime(pickupTime);
-
+    
     // Add finished order
     orderList.addOrder(order);
   }
+  
 
+  
   public void addPizzaToOrder(Order order) {
     // adding: customized pizzaType and its quantity to order
     Pizza pizza = null;
     int quantity;
-
+    
     ui.addPizzaToOrderMessage();
-
+    
     // Selecting pizza
     boolean noPizzaSelected = true;
     while (noPizzaSelected) {
       // UserInput
       String userInput = in.nextLine().toLowerCase();
       Integer pizzaID = tryParseInteger(userInput);
-
+      
       // Select pizza by ID or name
       if (pizzaID != null)
         pizza = menu.getPizza(pizzaID);
       else
         pizza = menu.getPizza(userInput);
-
+      
       // retry until pizza selected
       if (pizza != null) noPizzaSelected = false;
       else ui.addPizzaToOrderErrorMessage();
     }
-
+    
     // Add toppings to current pizza
     toppingsMenu(pizza);
-
+    
     // Select quantity of given pizza
     quantity = ui.pizzaQuantityMenu();
-
+    
     // Add selected pizza to order
     order.addPizza(pizza, quantity);
     ui.addPizzaToOrderSuccessMessage(pizza);
-
+    
     ui.printOrder(order, false);
   }
-
+  
   public void toppingsMenu(Pizza pizza) {
     // modifies pizza by adding toppings
     boolean addingToppings = true;
-
+    
     // Until chosen
     while (addingToppings) {
       ui.toppingMenuMessage();
-
+      
       // get action and topping
       String[] userInput = in.nextLine().toLowerCase().split(" ", 2);
       String action = userInput[0];
-      String topping = (userInput.length == 2) ? userInput[1]: null;
-
+      String topping = (userInput.length == 2) ? userInput[1] : null;
+      
       // preform action
       switch (action) {
         case "add", "a" -> addTopping(topping, pizza);
@@ -110,44 +114,44 @@ public class Main {
         case "" -> addingToppings = false; // continue/done
       }
     }
-
+    
   }
-
+  
   void addTopping(String toppingName, Pizza pizza) {
     Integer toppingID = tryParseInteger(toppingName);
     Topping topping;
-
+    
     // Get topping from menu
     if (toppingID != null)
       topping = menu.getTopping(toppingID);
     else
       topping = menu.getTopping(toppingName);
-
+    
     // Add topping to pizza
     if (topping != null)
       pizza.addTopping(topping);
     else
       ui.addToppingErrorMessage();
   }
-
+  
   void removeTopping(String toppingName, Pizza pizza) {
     Integer toppingID = tryParseInteger(toppingName);
     Topping topping;
-
+    
     // Get topping from menu
     if (toppingID != null)
       topping = menu.getTopping(toppingID);
     else
       topping = menu.getTopping(toppingName);
-
+    
     // Add topping to pizza
     if (topping != null)
       pizza.addWithdrawnTopping(topping);
     else
       ui.removeToppingErrorMessage();
   }
-
-
+  
+  
   //Utilities
   public Integer tryParseInteger(String text) {
     try {
@@ -156,7 +160,7 @@ public class Main {
       return null;
     }
   }
-
+  
   public void chooseList() {
     boolean loop = true;
     while (loop) {
@@ -176,13 +180,13 @@ public class Main {
       }
     }
   }
-
+  
   public void displayOrderList(boolean printFullList) {
     ui.printOrderList(orderList, printFullList);
     ui.orderListContinueMessage();
     in.nextLine();
   }
-
+  
   public void chooseOrder() {
     ui.printOrderList(orderList, false);
     Order order = null;
@@ -202,7 +206,7 @@ public class Main {
         ui.ChooseOrderInputErrorMessage();
     }
   }
-
+  
   public void editOrderStatus(Order order) {
     boolean loop = true;
     while (loop) {
@@ -221,12 +225,12 @@ public class Main {
       }
     }
   }
-
+  
   public void run() {
     // Get marios menu
     // orderList
     boolean loop = true;
-
+    
     while (loop) {
       ui.printOrderList(orderList, false);
       menu = createMenu();
@@ -234,7 +238,7 @@ public class Main {
       loop = mainMenu(loop);
     }
   }
-
+  
   public Menu createMenu() {
     // Create menu for Marions pizzabar
     Menu menuMario = new Menu();
