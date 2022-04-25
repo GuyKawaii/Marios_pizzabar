@@ -7,11 +7,12 @@ public class Test {
   UserInterface ui = new UserInterface();
   
   public void runAll() {
-    userStory_1_test_1();
-    order_test();
-    extraTesting();
+//    userStory_1_test_1();
+//    order_test();
+//    extraTesting();
+    pizzaToppings();
   }
-
+  
   public void editOrderStatus(Order order) {
     Scanner in = new Scanner(System.in);
     ui.printSelectStatus(order);
@@ -24,38 +25,39 @@ public class Test {
       case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
     }
   }
+  
   public void extraTesting() {
     Order order1 = new Order();
     Order order2 = new Order();
     Order order3 = new Order();
     order2.setPickupTime(LocalDateTime.now().plusMinutes(15));
     order3.setPickupTime(LocalDateTime.now().plusMinutes(5));
-
-
+    
+    
     order1.addPizza(new Pizza("pizza O1", "order1", 420), 2);
     order1.addPizza(new Pizza("pizza2 O1", "order1", 42));
     order2.addPizza(new Pizza("pizza O2", "order2", 420));
     order2.addPizza(new Pizza("pizza2 O2", "order2", 42));
     order3.addPizza(new Pizza("pizza O3", "order3", 420));
     order3.addPizza(new Pizza("pizza2 O3", "order3", 42));
-
-    ui.printOrder(order1, true);
-    ui.printOrder(order2, true);
-
+    
+    ui.printOrder(order1);
+    ui.printOrder(order2);
+    
     // oderList
     OrderList orderList = new OrderList();
     orderList.addOrder(order1);
     orderList.addOrder(order2);
     orderList.addOrder(order3);
-
+    
     ui.printOrderList(orderList, false);
-
+    
     // editOrder test
     Scanner in = new Scanner(System.in);
-    ui.selectOrderMessage();
+    ui.printSelectOrder();
     int chosenOrder = in.nextInt();
-    editOrderStatus(orderList.orders.get(chosenOrder-1));
-
+    editOrderStatus(orderList.orders.get(chosenOrder - 1));
+    
     ui.printOrderList(orderList, false);
   }
   
@@ -92,7 +94,7 @@ public class Test {
     order.addPizza(pizza1);
     order.addPizza(pizza2);
     
-    ui.printOrder(order,true);
+    ui.printOrder(order);
     
     // TEST 2
     System.out.println("\n//TEST 2 - identical pizza with identical topping but added in a different order are equal");
@@ -143,9 +145,32 @@ public class Test {
     order.addPizza(B2);
     
     System.out.println(order3);
-  
+    
   }
   
-
+  
+  public void pizzaToppings() {
+    // topping can not be both extra or withdrawn and only one of each topping can be applied.
+    // Toppings
+    Topping t1 = new Topping("egg", 5);
+    Topping t2 = new Topping("fish", 5);
+    Topping t3 = new Topping("fish", 5);
+    
+    // Pizza
+    Pizza p = new Pizza("Pizza", "description", 10);
+    // extraToppings
+//    p.addTopping(t1);
+//    p.addTopping(t2);
+//    p.addTopping(t3);
+    
+    // withdrawnToppings
+    p.addWithdrawnTopping(t1);
+    p.addWithdrawnTopping(t2);
+    p.addWithdrawnTopping(t3);
+    
+    // Pizza should have -fish
+    System.out.println(p);
+  }
+  
   
 }

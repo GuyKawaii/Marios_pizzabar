@@ -30,7 +30,7 @@ public class Menu {
     int index = pizzaID - 1;
     
     // Uses ID not index i.e. first ID = 1
-    if (pizzas.get(index) != null) {
+    if (0 <= index && index < pizzas.size()) {
       Pizza menuPizza = pizzas.get(index);
       return new Pizza(menuPizza.getName(), menuPizza.getDescription(), menuPizza.getPrice());
     }
@@ -47,17 +47,19 @@ public class Menu {
     toppings.add(topping);
   }
   
-  public Topping getTopping(String pizzaName) {
+  public Topping getTopping(String toppingName) {
     for (Topping topping : toppings)
-      if (topping.getName().equalsIgnoreCase(pizzaName)) return topping;
+      if (topping.getName().equalsIgnoreCase(toppingName)) return topping;
     
     return null;
   }
   
   public Topping getTopping(int toppingID) {
+    int index = toppingID - 1;
+    
     // Uses ID not index i.e. first ID = 1
-    if (toppings.get(toppingID - 1) != null)
-      return toppings.get(toppingID - 1);
+    if (0 <= index && index < toppings.size())
+      return toppings.get(index);
     
     return null;
   }
