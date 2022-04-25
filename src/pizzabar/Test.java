@@ -39,8 +39,8 @@ public class Test {
     order3.addPizza(new Pizza("pizza O3", "order3", 420));
     order3.addPizza(new Pizza("pizza2 O3", "order3", 42));
 
-    ui.printOrder(order1);
-    ui.printOrder(order2);
+    ui.printOrder(order1, true);
+    ui.printOrder(order2, true);
 
     // oderList
     OrderList orderList = new OrderList();
@@ -52,7 +52,7 @@ public class Test {
 
     // editOrder test
     Scanner in = new Scanner(System.in);
-    ui.printSelectOrder();
+    ui.selectOrderMessage();
     int chosenOrder = in.nextInt();
     editOrderStatus(orderList.orders.get(chosenOrder-1));
 
@@ -92,7 +92,7 @@ public class Test {
     order.addPizza(pizza1);
     order.addPizza(pizza2);
     
-    ui.printOrder(order);
+    ui.printOrder(order,true);
     
     // TEST 2
     System.out.println("\n//TEST 2 - identical pizza with identical topping but added in a different order are equal");

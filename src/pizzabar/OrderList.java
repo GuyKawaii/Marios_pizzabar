@@ -29,6 +29,15 @@ public class OrderList {
     int index = orderID - 1;
     
   }
-  
-  
+
+  //find order based off order ID
+  public Order findOrder(int orderID) {
+    for (int i = 0; i < orders.size(); i++) {
+      if (orders.get(i).getId() == orderID) {
+        Order order = orders.get(i);
+        return order;
+      }
+    }
+    return null;
+  }
 }

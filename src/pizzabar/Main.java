@@ -23,9 +23,8 @@ public class Main {
     switch (userInput.toLowerCase(Locale.ROOT)) {
       case "1", "make order", "make" -> makeOrder();
       case "2", "edit order", "edit" -> chooseOrder();
-      case "3" -> displayOrderList(false); //TODO: merge list. add text input.
-      case "4" -> displayOrderList(true);
-      case "5", "exit" -> loop = false;
+      case "3", "show orders", "show" -> chooseList();
+      case "4", "exit" -> loop = false;
     }
     return loop;
   }
@@ -62,7 +61,7 @@ public class Main {
       while (loop) {
         loop = toppingsMenu(pizza, loop);
       }
-      ui.printOrderLite(order);
+      ui.printOrder(order, false);
     } else {
       ui.addPizzaToOrderErrorMessage();
       addPizzaToOrder(order);
@@ -163,26 +162,49 @@ public class Main {
     return newList;
   }
 
+  public void chooseList() {
+    boolean loop = true;
+    while (loop) {
+      ui.printSelectOrderList();
+      String input = in.nextLine();
+      if (tryParse(input) != null) {
+        switch (parseInt(input)) {
+          case 1 -> {
+            displayOrderList(false);
+            loop = false;
+          }
+          case 2 -> {
+            displayOrderList(true);
+            loop = false;
+          }
+        }
+      }
+    }
+  }
+
   public void displayOrderList(boolean printFullList) {
     ui.printOrderList(orderList, printFullList);
-    ui.printOrderListContinue();
+    ui.orderListContinueMessage();
     in.nextLine();
   }
 
   public void chooseOrder() {
     ui.printOrderList(orderList, false);
-    ui.printSelectOrder();
-    int chosenOrder = in.nextInt();
-    while (chosenOrder <= 0 || chosenOrder > orderList.orders.size()) {
-      ui.printOrderOutOfRange();
-      ui.printSelectOrder();
-      chosenOrder = in.nextInt();
-    }
-    for (int i = 0; i < orderList.orders.size(); i++) {
-      if (orderList.orders.get(i).getId() == chosenOrder) {
-        Order order = orderList.orders.get(i);
-        editOrderStatus(order);
-      }
+    Order order = null;
+    while (order == null) {
+      ui.selectOrderMessage();
+      String input = in.nextLine();
+      //what does tryParse do
+      if (tryParse(input) != null) {
+        int orderID = parseInt(input);
+        order = orderList.findOrder(orderID); //Returns null if nothing is found
+        if (order != null)
+          editOrderStatus(order);
+        else {
+          ui.orderOutOfRangeMessage();
+        }
+      } else
+        ui.ChooseOrderInputErrorMessage();
     }
   }
 
@@ -190,14 +212,17 @@ public class Main {
     boolean loop = true;
     while (loop) {
       ui.printSelectStatus(order);
-      switch (in.nextInt()) {
-        case 1 -> order.setStatus(String.valueOf(OrderStatuses.PENDING));
-        case 2 -> order.setStatus(String.valueOf(OrderStatuses.READY));
-        case 3 -> order.setStatus(String.valueOf(OrderStatuses.DELIVERED));
-        case 4 -> order.setPaid(true);
-        case 5 -> order.setPaid(false);
-        case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
-        case 7 -> loop = false;
+      String input = in.nextLine();
+      if (tryParse(input) != null) {
+        switch (parseInt(input)) {
+          case 1 -> order.setStatus(String.valueOf(OrderStatuses.PENDING));
+          case 2 -> order.setStatus(String.valueOf(OrderStatuses.READY));
+          case 3 -> order.setStatus(String.valueOf(OrderStatuses.DELIVERED));
+          case 4 -> order.setPaid(true);
+          case 5 -> order.setPaid(false);
+          case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
+          case 7 -> loop = false;
+        }
       }
     }
   }
