@@ -22,10 +22,10 @@ public class Main {
     ui.printMainMenu();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
     switch (userInput.toLowerCase(Locale.ROOT)) {
-      case "1", "make order", "make" -> makeOrder();
-      case "2", "edit order", "edit" -> chooseOrder();
-      case "3", "show orders", "show" -> chooseList();
-      case "4", "exit" -> loop = false;
+      case "1", "m", "make order", "make" -> makeOrder();
+      case "2", "e", "edit order", "edit" -> chooseOrder();
+      case "3", "s", "show orders", "show" -> chooseList();
+      case "4", "x", "exit" -> loop = false;
     }
     return loop;
   }
@@ -172,7 +172,7 @@ public class Main {
     while (loop) {
       ui.printSelectOrderList();
       String input = in.nextLine();
-      if (tryParse(input) != null) {
+      if (tryParseInteger(input) != null) {
         switch (parseInt(input)) {
           case 1 -> {
             displayOrderList(false);
@@ -200,7 +200,7 @@ public class Main {
       ui.selectOrderMessage();
       String input = in.nextLine();
       //what does tryParse do
-      if (tryParse(input) != null) {
+      if (tryParseInteger(input) != null) {
         int orderID = parseInt(input);
         order = orderList.findOrder(orderID); //Returns null if nothing is found
         if (order != null)
@@ -218,7 +218,7 @@ public class Main {
     while (loop) {
       ui.printSelectStatus(order);
       String input = in.nextLine();
-      if (tryParse(input) != null) {
+      if (tryParseInteger(input) != null) {
         switch (parseInt(input)) {
           case 1 -> order.setStatus(String.valueOf(OrderStatuses.PENDING));
           case 2 -> order.setStatus(String.valueOf(OrderStatuses.READY));
