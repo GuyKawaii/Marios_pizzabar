@@ -162,7 +162,8 @@ public class UserInterface {
         4. Paid
         5. Not paid
         6. Canceled
-        7. Return to menu.
+        7. Remove Pizza from order
+        8. Return to menu
         """
     );
   }

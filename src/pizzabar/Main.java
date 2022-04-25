@@ -220,7 +220,8 @@ public class Main {
           case 4 -> order.setPaid(true);
           case 5 -> order.setPaid(false);
           case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
-          case 7 -> loop = false;
+          case 7 -> ui.removePizzaFromOrder(order);
+          case 8 -> loop = false;
         }
       }
     }
