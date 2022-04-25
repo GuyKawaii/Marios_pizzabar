@@ -87,7 +87,7 @@ public class Main {
     order.addPizza(pizza, quantity);
     ui.addPizzaToOrderSuccessMessage(pizza);
 
-    ui.printOrderLite(order);
+    ui.printOrder(order, false);
   }
 
   public void toppingsMenu(Pizza pizza) {
@@ -155,16 +155,6 @@ public class Main {
     } catch (NumberFormatException e) {
       return null;
     }
-  }
-
-  public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
-    ArrayList<T> newList = new ArrayList<>();
-    for (T element : list) {
-      if (!newList.contains(element)) {
-        newList.add(element);
-      }
-    }
-    return newList;
   }
 
   public void chooseList() {

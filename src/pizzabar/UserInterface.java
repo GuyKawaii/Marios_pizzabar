@@ -58,7 +58,7 @@ public class UserInterface {
       Pizza pizza = order.getPizzaTypes().get(i);
       int price = pizza.getPrice() * order.getAmountOfPizzaTypes().get(i);
       
-      returnStr.append(String.format("ID[%2d] - %2d X '%-40s' %4dkr\n",
+      returnStr.append(String.format(" #[%2d] - %2d X '%-40s' %4dkr\n",
           (i + 1),
           order.getAmountOfPizzaTypes().get(i),
           pizza.getNameAndTopping(),
@@ -75,26 +75,6 @@ public class UserInterface {
     System.out.println();
     System.out.println(returnStr);
   }
-
-
-  public void printOrderLite(Order order) {
-    StringBuilder returnStr = new StringBuilder();
-
-    // Order entries
-    for (int i = 0; i < order.getPizzaTypes().size(); i++) {
-      Pizza pizza = order.getPizzaTypes().get(i);
-      int price = pizza.getPrice() * order.getAmountOfPizzaTypes().get(i);
-
-      returnStr.append(String.format("ID[%2d] - %2d X '%-40s' %4dkr\n",
-          (i + 1),
-          order.getAmountOfPizzaTypes().get(i),
-          pizza.getNameAndTopping(),
-          price));
-    }
-    System.out.println();
-    System.out.println(returnStr);
-  }
-
 
   public void printOrderList(OrderList orderList, boolean printFullList) {
     StringBuilder returnStr = new StringBuilder();
