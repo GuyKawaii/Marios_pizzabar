@@ -168,7 +168,7 @@ public class UserInterface {
   }
   
   public void addPizzaToOrderMessage() {
-    System.out.println("PIZZA - Which pizza would you like to add to order? (name/number)");
+    System.out.println("PIZZA - Which pizza would you like to add to order? \"name/number\"");
   }
   
   public void addPizzaToOrderSuccessMessage(Pizza pizza) {
@@ -181,7 +181,7 @@ public class UserInterface {
   }
   
   public void toppingMenuMessage() {
-    System.out.println("TOPPINGS - Would you like to add/remove a topping or continue with order? - [a]dd \"name/ID\", [r]emove \"name/ID\" or [Enter] to continue)");
+    System.out.println("TOPPINGS - Would you like to add/remove a topping or continue with order? - [a]dd \"name/number\", [r]emove \"name/number\" or [Enter] to continue)");
   }
   
   public void addToppingErrorMessage() {
