@@ -14,16 +14,16 @@ public class Main {
   
   public static void main(String[] args) {
     new Main().run();
-//    new Test().runAll();
   }
   
   public boolean mainMenu(boolean loop) {
+    ui.printOrderList(orderList, false);
     ui.printMainMenu();
     String userInput = in.nextLine().toLowerCase(Locale.ROOT);
     switch (userInput.toLowerCase(Locale.ROOT)) {
       case "1", "m", "make order", "make" -> makeOrder();
       case "2", "e", "edit order", "edit" -> chooseOrder();
-      case "3", "s", "show orders", "show" -> chooseList();
+      case "3", "s", "show all orders", "show", "all" -> displayOrderList(true);
       case "4", "x", "exit" -> loop = false;
     }
     return loop;

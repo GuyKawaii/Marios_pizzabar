@@ -10,7 +10,7 @@ public class UserInterface {
   
   public void printMainMenu() {
     System.out.println("--------------------------------------------------------------------------------------------");
-    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show Orders\n4. Exit\nSelect an action:");
+    System.out.print("\n1. Make Order\n2. Edit Order\n3. Show all Orders\n4. Exit\nSelect an action:");
   }
   
   public void printMenu(Menu menu) {
