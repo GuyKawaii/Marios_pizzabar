@@ -43,7 +43,7 @@ public class Main {
         case "remove", "r" -> removePizzaFromOrder(order);
         case "" -> { // continue selected
           // only allow orders with items
-          if (order.getPizzaTypes().isEmpty()) System.out.println("Order cannot be empty");
+          if (order.getPizzaTypes().isEmpty()) ui.makeOrderErrorMessage();
           else loop = false;
         }
       }

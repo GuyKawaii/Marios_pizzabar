@@ -219,4 +219,8 @@ public class UserInterface {
   public void pizzaQuantityMenuErrorMessage() {
     System.out.println("Time was not specified correctly");
   }
+
+  public void makeOrderErrorMessage() {
+    System.out.println("Order cannot be empty");
+  }
 }
