@@ -15,7 +15,6 @@ public class Order implements Comparable<Order> {
   public Order() {
     pizzaType = new ArrayList<>();
     amountOfPizzaType = new ArrayList<>();
-    //pickupTime = LocalDateTime.now().plusMinutes(30); // default X min from now
     totalPrice = 0;
     id = 0;
     setStatus(String.valueOf(OrderStatuses.PENDING));
@@ -76,7 +75,6 @@ public class Order implements Comparable<Order> {
       pizzaType.add(pizza);
       amountOfPizzaType.add(amount);
     }
-    
     updateTotalPrice();
   }
   
@@ -120,32 +118,4 @@ public class Order implements Comparable<Order> {
   public int compareTo(Order order) {
     return this.pickupTime.compareTo(order.pickupTime);
   }
-  
-//  @Override
-//  public String toString() {
-//    StringBuilder returnStr = new StringBuilder();
-//
-//    for (int i = 0; i < pizzaType.size(); i++) {
-//      Pizza pizza = pizzaType.get(i);
-//      int price = pizza.getPrice() * amountOfPizzaType.get(i);
-//      totalPrice += price;
-//
-//      returnStr.append(String.format("ID:%02d - %2d X '%-40s' %4dkr\n",
-//          (i + 1),
-//          amountOfPizzaType.get(i),
-//          pizza.getNameAndTopping(),
-//          price));
-//    }
-//
-//    returnStr.append(String.format("TOTAL: %53dkr", getTotalPrice()));
-//
-//    if (pickupTime != null)
-//      returnStr.append(String.format("\nPICKUP-TIME: %S:%s %s/%s\n",
-//          pickupTime.getHour(),
-//          pickupTime.getMinute(),
-//          pickupTime.getDayOfMonth(),
-//          pickupTime.getMonth()));
-//
-//    return returnStr.toString();
-//  }
 }

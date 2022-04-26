@@ -3,7 +3,6 @@ package pizzabar;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Scanner;
-
 import static java.lang.Integer.parseInt;
 
 public class Main {
@@ -40,21 +39,19 @@ public class Main {
       
       switch (userInput) {
         case "add", "a" -> addPizzaToOrder(order);
-        case "remove", "r" -> ui.removePizzaFromOrder(order);
+        case "remove", "r" -> removePizzaFromOrder(order);
         case "" -> loop = false;
       }
       
     }
     
     // pickupTime
-    LocalDateTime pickupTime = ui.pickupTimeMenu();
+    LocalDateTime pickupTime = pickupTimeMenu();
     order.setPickupTime(pickupTime);
     
     // Add finished order
     orderList.addOrder(order);
   }
-  
-
   
   public void addPizzaToOrder(Order order) {
     // adding: customized pizzaType and its quantity to order
@@ -85,7 +82,7 @@ public class Main {
     toppingsMenu(pizza);
     
     // Select quantity of given pizza
-    quantity = ui.pizzaQuantityMenu();
+    quantity = pizzaQuantityMenu();
     
     // Add selected pizza to order
     order.addPizza(pizza, quantity);
@@ -114,7 +111,6 @@ public class Main {
         case "" -> addingToppings = false; // continue/done
       }
     }
-    
   }
   
   void addTopping(String toppingName, Pizza pizza) {
@@ -150,8 +146,7 @@ public class Main {
     else
       ui.removeToppingErrorMessage();
   }
-  
-  
+
   //Utilities
   public Integer tryParseInteger(String text) {
     try {
@@ -220,11 +215,81 @@ public class Main {
           case 4 -> order.setPaid(true);
           case 5 -> order.setPaid(false);
           case 6 -> order.setStatus(String.valueOf(OrderStatuses.CANCELED));
-          case 7 -> ui.removePizzaFromOrder(order);
+          case 7 -> removePizzaFromOrder(order);
           case 8 -> loop = false;
         }
       }
     }
+  }
+
+  public void removePizzaFromOrder(Order order) {
+    boolean notRemovedItem = true;
+    Integer index;
+    String userInput;
+
+    // Until valid number
+    while (notRemovedItem) {
+      ui.removePizzaFromOrderMessage();
+      userInput = in.nextLine();
+      index = tryParseInteger(userInput);
+
+      // abort
+      if (userInput.isEmpty()) return;
+
+      // remove
+      notRemovedItem = !order.removePizzaID(index);
+
+      // remove error
+      if (notRemovedItem) ui.removePizzaFromOrderErrorMessage();
+    }
+  }
+
+  public LocalDateTime pickupTimeMenu() {
+    Integer hour = null;
+    Integer min = null;
+
+    // Until time found
+    while (hour == null || min == null) {
+      ui.pickupTimeMenuMessage();
+      String userInput = in.nextLine();
+
+      // custom time
+      if (userInput.length() == 5) {
+        hour = tryParseInteger(userInput.substring(0, 2));
+        min = tryParseInteger(userInput.substring(3, 5));
+      }
+
+      // default time
+      if (userInput.isEmpty()) return LocalDateTime.now().plusMinutes(30);
+
+      // non-correct time
+      if (hour == null || min == null) ui.pickupTimeMenuErrorMessage();
+    }
+
+    // custom time
+    return LocalDateTime.now().withHour(hour).withMinute(min);
+  }
+
+  public int pizzaQuantityMenu() {
+    Integer quantity = null;
+    ui.pizzaQuantityMenuMessage();
+
+    // Until quantity found
+    while (quantity == null) {
+      String userInput = in.nextLine();
+
+      // default quantity
+      if (userInput.isEmpty()) return 1;
+
+      // custom quantity
+      quantity = tryParseInteger(userInput);
+
+      // non-correct quantity
+      if (quantity == null) ui.pizzaQuantityMenuErrorMessage();
+    }
+
+    // custom quantity
+    return quantity;
   }
   
   public void run() {
@@ -277,65 +342,4 @@ public class Main {
     menuMario.addTopping(new Topping("rejer", 15));
     return menuMario;
   }
-
-//  void addTopping(String topping, Pizza pizza) {
-//    boolean noItem = true;
-//    int counter = 0;
-//    for (Topping topping : menu.getToppings()
-//    ) {
-//      counter++;
-//      if (tryParse(toppingSelect) != null && tryParse(toppingSelect) == counter) {
-//        pizza.addTopping(menu.getTopping(parseInt(toppingSelect)));
-//        noItem = false;
-//      } else if (toppingSelect.equalsIgnoreCase(topping.getName())) {
-//        pizza.addTopping(menu.getTopping(toppingSelect));
-//        noItem = false;
-//      }
-//    }
-//    if (noItem) {
-//      ui.addToppingErrorMessage();
-//    }
-//  }
-
-//  void removeTopping(String text, Pizza pizza) {
-//    boolean noItem = true;
-//    int counter = 0;
-//    for (Topping topping : menu.getToppings()
-//    ) {
-//      counter++;
-//      if (tryParse(text) != null && tryParse(text) == counter) {
-//        pizza.addWithdrawnTopping(menu.getTopping(parseInt(text)));
-//        noItem = false;
-//      } else if (text.equalsIgnoreCase(topping.getName())) {
-//        pizza.addWithdrawnTopping(menu.getTopping(text));
-//        noItem = false;
-//      }
-//    }
-//    if (noItem) {
-//      ui.removeToppingErrorMessage();
-//    }
-//  }
-
-//  public void orderCleanup(Pizza pizza) {
-//    ArrayList<Topping> forRemoval = new ArrayList<>();
-//    pizza.setExtraToppings(removeDuplicates(pizza.getToppings()));
-//    pizza.setWithdrawnToppings(removeDuplicates(pizza.getWithdrawnTopping()));
-//    if (pizza.getToppings().size() >= pizza.getWithdrawnTopping().size()) {
-//      for (Topping topping : pizza.getToppings()
-//      ) {
-//        if (pizza.getWithdrawnTopping().contains(topping))
-//          forRemoval.add(topping);
-//      }
-//      pizza.getToppings().removeAll(forRemoval);
-//      pizza.getWithdrawnTopping().removeAll(forRemoval);
-//    } else {
-//      for (Topping topping : pizza.getWithdrawnTopping()
-//      ) {
-//        if (pizza.getToppings().contains(topping))
-//          forRemoval.add(topping);
-//      }
-//      pizza.getWithdrawnTopping().removeAll(forRemoval);
-//      pizza.getToppings().removeAll(forRemoval);
-//    }
-//  }
 }

@@ -145,7 +145,6 @@ public class Test {
     order.addPizza(B2);
     
     System.out.println(order3);
-    
   }
   
   
@@ -171,6 +170,4 @@ public class Test {
     // Pizza should have -fish
     System.out.println(p);
   }
-  
-  
 }

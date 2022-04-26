@@ -2,15 +2,11 @@ package pizzabar;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Scanner;
-
-import static java.lang.Integer.parseInt;
 
 public class UserInterface {
   private final String TEXT_RESET = "\u001B[0m";
   private final String TEXT_RED = "\u001B[31m";
   private final String TEXT_GREEN = "\u001B[32m";
-  Scanner in = new Scanner(System.in);
   
   public void printMainMenu() {
     System.out.println("--------------------------------------------------------------------------------------------");
@@ -196,85 +192,28 @@ public class UserInterface {
   public void makeOrderMessage() {
     System.out.println("SELECT - Do you want to add/remove pizza, or continue with order? ([a]dd, [r]emove or [Enter] to continue)");
   }
-  
-  public void removePizzaFromOrder(Order order) {
-    boolean notRemovedItem = true;
-    Integer index;
-    String userInput;
-    
-    // Until valid number
-    while (notRemovedItem) {
-      System.out.println("REMOVE - [Enter] to abort or [number] to remove #number from order");
-      userInput = in.nextLine();
-      index = tryParseInteger(userInput);
-      
-      // abort
-      if (userInput.isEmpty()) return;
-      
-      // remove
-      notRemovedItem = !order.removePizzaID(index);
-      
-      // remove error
-      if (notRemovedItem) System.out.println("not found in order");
-    }
+
+  public void removePizzaFromOrderMessage() {
+    System.out.println("REMOVE - [Enter] to abort or [number] to remove #number from order");
   }
-  
-  
-  public LocalDateTime pickupTimeMenu() {
-    Integer hour = null;
-    Integer min = null;
-    
-    // Until time found
-    while (hour == null || min == null) {
-      System.out.println("Pickup time for order? - (hh:mm or hh mm ex. 09:45, 09 45) or [enter] for 30 min from now");
-      String userInput = in.nextLine();
-      
-      // custom time
-      if (userInput.length() == 5) {
-        hour = tryParseInteger(userInput.substring(0, 2));
-        min = tryParseInteger(userInput.substring(3, 5));
-      }
-      
-      // default time
-      if (userInput.isEmpty()) return LocalDateTime.now().plusMinutes(30);
-      
-      // non-correct time
-      if (hour == null || min == null) System.out.println("Time was not specified correctly");
-    }
-    
-    // custom time
-    return LocalDateTime.now().withHour(hour).withMinute(min);
+
+  public void removePizzaFromOrderErrorMessage() {
+    System.out.println("not found in order");
   }
-  
-  public int pizzaQuantityMenu() {
-    Integer quantity = null;
+
+  public void pickupTimeMenuMessage() {
+    System.out.println("Pickup time for order? - (hh:mm or hh mm ex. 09:45, 09 45) or [enter] for 30 min from now");
+  }
+
+  public void pickupTimeMenuErrorMessage() {
+    System.out.println("Time was not specified correctly");
+  }
+
+  public void pizzaQuantityMenuMessage() {
     System.out.println("QUANTITY? - [number] or [enter] for 1X)");
-    
-    // Until quantity found
-    while (quantity == null) {
-      String userInput = in.nextLine();
-      
-      // default quantity
-      if (userInput.isEmpty()) return 1;
-      
-      // custom quantity
-      quantity = tryParseInteger(userInput);
-      
-      // non-correct quantity
-      if (quantity == null) System.out.println("Time was not specified correctly");
-    }
-    
-    // custom quantity
-    return quantity;
   }
-  
-  public Integer tryParseInteger(String text) {
-    try {
-      return parseInt(text);
-    } catch (NumberFormatException e) {
-      return null;
-    }
+
+  public void pizzaQuantityMenuErrorMessage() {
+    System.out.println("Time was not specified correctly");
   }
-  
-  
 }

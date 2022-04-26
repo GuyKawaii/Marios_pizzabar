@@ -34,7 +34,6 @@ public class Menu {
       Pizza menuPizza = pizzas.get(index);
       return new Pizza(menuPizza.getName(), menuPizza.getDescription(), menuPizza.getPrice());
     }
-    
     return null;
   }
   
@@ -67,35 +66,4 @@ public class Menu {
   public ArrayList<Topping> getToppings() {
     return toppings;
   }
-  
-//  @Override
-//  public String toString() {
-//    return String.format("%s%s", pizzasToString(), toppingsToString());
-//  }
-//
-//  public String pizzasToString() {
-//    StringBuilder returnStr = new StringBuilder();
-//
-//    // pizzas
-//    returnStr.append("PIZZAS\n");
-//    for (int i = 0; i < pizzas.size(); i++) {
-//      Pizza pizza = pizzas.get(i);
-//      returnStr.append(String.format("%2d - %-20s' %-40s' %4sKr\n", (i + 1), pizza.getName(), pizza.getDescription(), pizza.getPrice()));
-//    }
-//
-//    return returnStr.toString();
-//  }
-//
-//  public String toppingsToString() {
-//    StringBuilder returnStr = new StringBuilder();
-//
-//    // toppings
-//    returnStr.append("TOPPINGS\n");
-//    for (int i = 0; i < toppings.size(); i++) {
-//      Topping topping = toppings.get(i);
-//      returnStr.append(String.format("%2d - %-62s' %4sKr\n", (i + 1), topping.getName(), topping.getPrice()));
-//    }
-//
-//    return returnStr.toString();
-//  }
 }
