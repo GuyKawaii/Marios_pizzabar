@@ -181,11 +181,12 @@ public class Main {
     ui.orderListContinueMessage();
     in.nextLine();
   }
-  
+
   public void chooseOrder() {
+    boolean loop = true;
     ui.printOrderList(orderList, false);
     Order order = null;
-    while (order == null) {
+    while (order == null && loop) {
       ui.selectOrderMessage();
       String input = in.nextLine();
       //what does tryParse do
@@ -197,6 +198,8 @@ public class Main {
         else {
           ui.orderOutOfRangeMessage();
         }
+      } else if(input.toLowerCase(Locale.ROOT).contains("exit")) {
+        loop = false;
       } else
         ui.ChooseOrderInputErrorMessage();
     }

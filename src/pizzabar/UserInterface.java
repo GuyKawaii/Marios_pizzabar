@@ -131,7 +131,7 @@ public class UserInterface {
   }
   
   public void selectOrderMessage() {
-    System.out.println("Type the ID of the order do you want to change the status of.");
+    System.out.println("Type the ID [number] of the order do you want to change the status of, or \"exit\" to return to main menu.");
   }
   
   public void ChooseOrderInputErrorMessage() {
