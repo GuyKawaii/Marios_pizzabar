@@ -49,6 +49,9 @@ public class UserInterface {
   public void printOrder(Order order, boolean printAll) {
     StringBuilder returnStr = new StringBuilder();
     
+    // Creating order
+    if (!printAll) returnStr.append("CURRENT ORDER:\n");
+    
     // Order entries
     for (int i = 0; i < order.getPizzaTypes().size(); i++) {
       Pizza pizza = order.getPizzaTypes().get(i);

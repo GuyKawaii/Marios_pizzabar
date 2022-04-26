@@ -3,6 +3,7 @@ package pizzabar;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Scanner;
+
 import static java.lang.Integer.parseInt;
 
 public class Main {
@@ -40,7 +41,11 @@ public class Main {
       switch (userInput) {
         case "add", "a" -> addPizzaToOrder(order);
         case "remove", "r" -> removePizzaFromOrder(order);
-        case "" -> loop = false;
+        case "" -> { // continue selected
+          // only allow orders with items
+          if (order.getPizzaTypes().isEmpty()) System.out.println("Order cannot be empty");
+          else loop = false;
+        }
       }
       
     }
@@ -146,7 +151,7 @@ public class Main {
     else
       ui.removeToppingErrorMessage();
   }
-
+  
   //Utilities
   public Integer tryParseInteger(String text) {
     try {
@@ -224,73 +229,73 @@ public class Main {
       }
     }
   }
-
+  
   public void removePizzaFromOrder(Order order) {
     boolean notRemovedItem = true;
     Integer index;
     String userInput;
-
+    
     // Until valid number
     while (notRemovedItem) {
       ui.removePizzaFromOrderMessage();
       userInput = in.nextLine();
       index = tryParseInteger(userInput);
-
+      
       // abort
       if (userInput.isEmpty()) return;
-
+      
       // remove
       notRemovedItem = !order.removePizzaID(index);
-
+      
       // remove error
       if (notRemovedItem) ui.removePizzaFromOrderErrorMessage();
     }
   }
-
+  
   public LocalDateTime pickupTimeMenu() {
     Integer hour = null;
     Integer min = null;
-
+    
     // Until time found
     while (hour == null || min == null) {
       ui.pickupTimeMenuMessage();
       String userInput = in.nextLine();
-
+      
       // custom time
       if (userInput.length() == 5) {
         hour = tryParseInteger(userInput.substring(0, 2));
         min = tryParseInteger(userInput.substring(3, 5));
       }
-
+      
       // default time
       if (userInput.isEmpty()) return LocalDateTime.now().plusMinutes(30);
-
+      
       // non-correct time
       if (hour == null || min == null) ui.pickupTimeMenuErrorMessage();
     }
-
+    
     // custom time
     return LocalDateTime.now().withHour(hour).withMinute(min);
   }
-
+  
   public int pizzaQuantityMenu() {
     Integer quantity = null;
     ui.pizzaQuantityMenuMessage();
-
+    
     // Until quantity found
     while (quantity == null) {
       String userInput = in.nextLine();
-
+      
       // default quantity
       if (userInput.isEmpty()) return 1;
-
+      
       // custom quantity
       quantity = tryParseInteger(userInput);
-
+      
       // non-correct quantity
       if (quantity == null) ui.pizzaQuantityMenuErrorMessage();
     }
-
+    
     // custom quantity
     return quantity;
   }
